@@ -1,0 +1,47 @@
+# Comments are provided throughout this file to help you get started.
+# If you need more help, visit the Docker compose reference guide at
+# https://docs.docker.com/compose/compose-file/
+
+# Here the instructions define your application as a service called "server".
+# This service is built from the Dockerfile in the current directory.
+# You can add other services your application may depend on here, such as a
+# database or a cache. For examples, see the Awesome Compose repository:
+# https://github.com/docker/awesome-compose
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: infdw01-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: Filmes
+      MYSQL_TCP_PORT: 3306
+    ports:
+      - 3307:3306
+    expose: 
+      - 3306
+    healthcheck:
+        test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+        timeout: 20s
+        retries: 5     
+  server:
+    depends_on:
+            mysql:
+                condition: service_healthy
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    working_dir: /usr/src/dw1
+    restart: unless-stopped
+    container_name: infdw01
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_LOCAL_PORT: 3306
+      MYSQL_DATABASE: Filmes
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: secret      
+    ports:
+      - 3001:3001
+    stdin_open: true
+    tty: true  
+
