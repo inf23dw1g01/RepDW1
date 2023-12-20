@@ -13,7 +13,7 @@ services:
     container_name: infdw01-mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: 123456
       MYSQL_DATABASE: Filmes
       MYSQL_TCP_PORT: 3306
     ports:
@@ -39,7 +39,7 @@ services:
       MYSQL_LOCAL_PORT: 3306
       MYSQL_DATABASE: Filmes
       MYSQL_USERNAME: root
-      MYSQL_PASSWORD: secret      
+      MYSQL_PASSWORD: 123456      
     ports:
       - 3001:3001
     stdin_open: true
