@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+    mysqldb:
+        build:
+            context: ./
+            dockerfile: Dockerfile_mysql
+        platform: linux/x86_64
+        container_name: filmesapi-mysql
+        ports:
+            - 3306:3306
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+            timeout: 5s
+            retries: 10
+    app:
+        depends_on:
+            mysqldb:
+                condition: service_healthy
+        build:
+            context: ./
+            dockerfile: Dockerfile
+        working_dir: /usr/src/filmesapi
+        container_name: filmesapi-api
+        restart: unless-stopped
+        env_file: ./.env
+        ports:
+            - 8080:8080
+        stdin_open: true
+        tty: true
